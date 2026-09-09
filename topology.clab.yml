@@ -1,0 +1,30 @@
+name: network-automation-lab
+
+topology:
+  nodes:
+
+    user:
+      kind: linux
+      image: kiishi-network-node:1.0
+
+    camera:
+      kind: linux
+      image: kiishi-network-node:1.0
+
+    switch:
+      kind: linux
+      image: kiishi-network-node:1.0
+      security-opts:
+        - seccomp=unconfined
+        - apparmor=unconfined
+
+    router:
+      kind: linux
+      image: kiishi-network-node:1.0
+      exec:
+        - sysctl -w net.ipv4.ip_forward=1
+
+  links:
+    - endpoints: ["user:eth1", "switch:eth1"]
+    - endpoints: ["camera:eth1", "switch:eth2"]
+    - endpoints: ["switch:eth3", "router:eth1"]
